@@ -23,15 +23,35 @@ from api.serializers import UserSerializer
 
 class UserList(generics.ListCreateAPIView):
     
-    queryset = User.objects.all()
+    #queryset = User.objects.all()
     serializer_class = UserSerializer
     
-    permission_classes = (IsAuthenticated,)
-    authentication_class = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated]
     
+    authentication_classes = [TokenAuthentication]
     
+    def get(self, request, *args, **kwargs):
+        
+        persona = User.objects.all()
+        self.queryset = persona
+        print(request.user)
+        
+        return self.list(request, *args, **kwargs)
     
-    
+#class UserList(generics.ListCreateAPIView):
+#    queryset = User.objects.all()
+#    serializer_class = UserSerializer
+#    permission_classes = [IsAuthenticated]
+#
+#    def list(self, request):
+#        # Note the use of `get_queryset()` instead of `self.queryset`
+#        print(request.body)
+#        print(request.data)
+#        queryset = self.get_queryset()
+#        serializer = UserSerializer(queryset, many=True)
+#        return Response(serializer.data)
+
+
 class Login(FormView):
     template_name = "login.html"
     form_class = AuthenticationForm
